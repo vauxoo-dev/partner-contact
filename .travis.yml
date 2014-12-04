@@ -1,5 +1,8 @@
 language: python
 
+build_image: vauxoo/odoo-80-image-shippable-auto
+commit_container: cowardvassal/vauxoo-dev
+
 python:
   - "2.7"
 
@@ -10,7 +13,7 @@ virtualenv:
   system_site_packages: true
 
 install:
-  - git clone https://github.com/OCA/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools
+  - git clone --single-branch --depth=1 https://github.com/OCA/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools
   - export PATH=${HOME}/maintainer-quality-tools/travis:${PATH}
   - travis_install_nightly ${VERSION}
   - $HOME/maintainer-quality-tools/travis/travis_install_nightly ${VERSION}
