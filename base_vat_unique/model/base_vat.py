@@ -36,13 +36,13 @@ class res_partner(osv.Model):
     '''
     _inherit = 'res.partner'
 
-    def copy(self, cr, uid, id, default=None, context=None):
+    def copy(self, cr, uid, ids, default=None, context=None):
         if default is None:
             default = {}
         if not default.get('name', False):
             default.update({'vat': False})
         return super(res_partner, self).copy(
-            cr, uid, id, default, context=context)
+            cr, uid, ids, default, context=context)
 
     def _check_unique_vat(self, cr, uid, ids, context=None):
         if context is None:
