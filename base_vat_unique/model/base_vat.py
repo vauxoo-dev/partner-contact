@@ -36,6 +36,14 @@ class res_partner(osv.Model):
     '''
     _inherit = 'res.partner'
 
+    def copy(self, cr, uid, id, default=None, context=None):
+        if default is None:
+            default = {}
+        if not default.get('name', False):
+            default.update({'vat': False})
+        return super(res_partner, self).copy(
+            cr, uid, id, default, context=context)
+
     def _check_unique_vat(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
@@ -46,10 +54,12 @@ class res_partner(osv.Model):
                               ('id', '!=', partner.id)], context=context)
                 for partner2 in self.browse(
                         cr, uid, partner_ids, context=context):
-                    if not((partner.id in [child.id for child in
-                                           partner2.child_ids]) or (
-                            partner2.parent_id and
-                            partner.parent_id == partner2.parent_id)):
+                    if not (
+                        (partner.parent_id and (
+                            (partner.parent_id == partner2.parent_id) or (
+                                partner.parent_id.id == partner2.id))) or (
+                            partner2.id in [
+                                child.id for child in partner.child_ids])):
                         return False
         return True
 
