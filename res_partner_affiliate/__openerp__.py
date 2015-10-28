@@ -20,13 +20,14 @@
 ##############################################################################
 {
     'name': 'Partner Affiliates',
-    'version': '1.0',
-    'author': 'Camptocamp',
+    'version': '8.0.1.0.0',
+    'author': "Camptocamp,Odoo Community Association (OCA)",
     'maintainer': 'Camptocamp',
     'category': 'CRM',
     'license': 'AGPL-3',
     'depends': ['base'],
-    'description': """Allows to use parent_id in company partner to refer to a parent company
+    'description': """
+    Allows to use parent_id in company partner to refer to a parent company
     Plus will show a tab in parent company of affiliated companies""",
     'website': 'http://www.camptocamp.com',
     'data': [

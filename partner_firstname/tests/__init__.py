@@ -28,8 +28,4 @@
 #
 ##############################################################################
 
-import test_partner_firstname
-
-checks = [
-    test_partner_firstname
-]
+from . import test_empty, test_name, test_onchange
