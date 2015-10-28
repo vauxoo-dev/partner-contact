@@ -19,8 +19,6 @@
 #
 ##############################################################################
 from openerp.osv import orm, fields
-from openerp.addons.base.res import res_partner
-res_partner.ADDRESS_FIELDS = res_partner.ADDRESS_FIELDS + ('street3',)
 
 
 class res_partner(orm.Model):
@@ -30,6 +28,12 @@ class res_partner(orm.Model):
     _columns = {
         'street3': fields.char('Street 3'),
     }
+
+    def _address_fields(self, cr, uid, context=None):
+        fields = super(res_partner, self
+                       )._address_fields(cr, uid, context=context)
+        fields.append('street3')
+        return fields
 
 
 class res_country(orm.Model):
