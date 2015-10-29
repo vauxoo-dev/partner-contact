@@ -22,7 +22,7 @@ env:
 
   matrix:
   - LINT_CHECK="1"
-  - TESTS="1" EXCLUDE="portal_partner_merge"
+  - TESTS="1"
 
 virtualenv:
   system_site_packages: true
