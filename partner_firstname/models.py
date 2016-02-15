@@ -39,6 +39,56 @@ class ResPartner(models.Model):
         store=True)
 
     @api.model
+    def create(self, vals):
+        """Add inverted names at creation if unavailable."""
+        context = dict(self.env.context)
+        name = vals.get("name", context.get("default_name"))
+
+        if name is not None:
+            # Calculate the splitted fields
+            inverted = self._get_inverse_name(
+                self._get_whitespace_cleaned_name(name),
+                vals.get("is_company",
+                         self.default_get(["is_company"])["is_company"]))
+
+            for key, value in inverted.iteritems():
+                if not vals.get(key) or context.get("copy"):
+                    vals[key] = value
+
+            # Remove the combined fields
+            if "name" in vals:
+                del vals["name"]
+            if "default_name" in context:
+                del context["default_name"]
+
+        return super(ResPartner, self.with_context(context)).create(vals)
+
+    @api.multi
+    def copy(self, default=None):
+        """Ensure partners are copied right.
+
+        Odoo adds ``(copy)`` to the end of :attr:`~.name`, but that would get
+        ignored in :meth:`~.create` because it also copies explicitly firstname
+        and lastname fields.
+        """
+        return super(ResPartner, self.with_context(copy=True)).copy(default)
+
+    @api.model
+    def default_get(self, fields_list):
+        """Invert name when getting default values."""
+        result = super(ResPartner, self).default_get(fields_list)
+
+        inverted = self._get_inverse_name(
+            self._get_whitespace_cleaned_name(result.get("name", "")),
+            result.get("is_company", False))
+
+        for field in inverted.keys():
+            if field in fields_list:
+                result[field] = inverted.get(field)
+
+        return result
+
+    @api.model
     def _get_computed_name(self, lastname, firstname):
         """Compute the 'name' field according to splitted data.
         You can override this method to change the order of lastname and
@@ -55,13 +105,11 @@ class ResPartner(models.Model):
     def _inverse_name_after_cleaning_whitespace(self):
         """Clean whitespace in :attr:`~.name` and split it.
 
-        Removes leading, trailing and duplicated whitespace.
-
         The splitting logic is stored separately in :meth:`~._inverse_name`, so
         submodules can extend that method and get whitespace cleaning for free.
         """
         # Remove unneeded whitespace
-        clean = u" ".join(self.name.split(None)) if self.name else self.name
+        clean = self._get_whitespace_cleaned_name(self.name)
 
         # Clean name avoiding infinite recursion
         if self.name != clean:
@@ -72,8 +120,16 @@ class ResPartner(models.Model):
             self._inverse_name()
 
     @api.model
+    def _get_whitespace_cleaned_name(self, name):
+        """Remove redundant whitespace from :param:`name`.
+
+        Removes leading, trailing and duplicated whitespace.
+        """
+        return u" ".join(name.split(None)) if name else name
+
+    @api.model
     def _get_inverse_name(self, name, is_company=False):
-        """Try to revert the effect of :meth:`._compute_name`.
+        """Compute the inverted name.
 
         - If the partner is a company, save it in the lastname.
         - Otherwise, make a guess.
@@ -90,15 +146,16 @@ class ResPartner(models.Model):
             parts = [name or False, False]
         # Guess name splitting
         else:
-            parts = name.split(" ", 1)
+            parts = name.strip().split(" ", 1)
             while len(parts) < 2:
                 parts.append(False)
-        return parts
+        return {"lastname": parts[0], "firstname": parts[1]}
 
     @api.one
     def _inverse_name(self):
+        """Try to revert the effect of :meth:`._compute_name`."""
         parts = self._get_inverse_name(self.name, self.is_company)
-        self.lastname, self.firstname = parts
+        self.lastname, self.firstname = parts["lastname"], parts["firstname"]
 
     @api.one
     @api.constrains("firstname", "lastname")
