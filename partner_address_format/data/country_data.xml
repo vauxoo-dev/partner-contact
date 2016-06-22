@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data noupdate="0">
+        <record id="base.mx" model="res.country">
+            <field name="address_format_id" ref="partner_address_format.partner_address_es_MX"/>
+        </record>
+        <record id="base.pa" model="res.country">
+            <field name="address_format_id" ref="partner_address_format.partner_address_es_MX"/>
+        </record>
+    </data>
+</openerp>

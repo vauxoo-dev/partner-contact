@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data noupdate="0">
+        <record id="base.main_company" model="res.company">
+            <field name="address_format_id" ref="partner_address_format.company_format"/>
+        </record>
+    </data>
+</openerp>
