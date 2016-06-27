@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <template id="demo_broken_format" name="Base Partner Short Format">
+            <!-- Demo data for a broken template in order to add such unittest
+            and be used for training purposes -->
+            <address>
+                <strong><t t-raw="partner.name.capitalize()"/>.</strong><br/>
+                <t t-raw="partner.street.broken_element()"/>, <t t-raw="partner.street2.capitalize()"/><br/>
+                <t t-raw="partner.city.capitalize()"/>, <t t-raw="partner.state_id.code"/> <t t-raw="partner.zip"/><br/>
+                <abbr title="Phone">P:</abbr> <t t-raw="partner.phone"/>
+            </address>
+        </template>
+    </data>
+</openerp>

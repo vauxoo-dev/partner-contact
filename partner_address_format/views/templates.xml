@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data noupdate="1">
+        <!--This is the wired default value if you want edit it manually
+            by the frontend that's why it is noupdate="1" do not overwrite
+            it by code.-->
+        <template id="default" name="Address Format Main default">
+            <address>
+                <strong><t t-raw="partner.name.capitalize()"/>.</strong><br/>
+                <t t-raw="partner.street and partner.street.capitalize() or ''"/>, <t t-raw="partner.street2 and partner.street2.capitalize() or ''"/><br/>
+                <t t-raw="partner.city and partner.city.capitalize() or ''"/>, <t t-raw="partner and partner.state_id.code or ''"/> <t t-raw="partner.zip"/><br/>
+                <abbr title="Phone">P:</abbr> <t t-raw="partner.phone"/>
+            </address>
+            <address>
+                <a href="mailto:#"> <t t-raw="partner.email"/></a>
+            </address>
+        </template>
+    </data>
+    <data>
+        <template id="partner_address_long_format" name="Address Format Main">
+            <address>
+                <strong><t t-raw="partner.name.capitalize()"/>.</strong><br/>
+                <t t-raw="partner.street and partner.street.capitalize() or ''"/>, <t t-raw="partner.street2 and partner.street2.capitalize() or ''"/><br/>
+                <t t-raw="partner.city and partner.city.capitalize() or ''"/>, <t t-raw="partner and partner.state_id.code or ''"/> <t t-raw="partner.zip"/><br/>
+                <abbr title="Phone">P:</abbr> <t t-raw="partner.phone"/>
+            </address>
+            <address>
+                <a href="mailto:#"> <t t-raw="partner.email"/></a>
+            </address>
+        </template>
+        <!-- From https://es.wikipedia.org/wiki/Direcci%C3%B3n_postal -->
+        <template id="partner_address_es_MX" name="Address Format for MX">
+            <!-- Personal Contact-->
+            <address t-if="partner.is_company or partner.parent_id">
+                <strong><t t-raw="partner.name.capitalize()"/>.</strong><br/>
+                <!-- Type and name of street -->
+                <t t-if="partner.street">
+                    <t t-raw="partner.street and partner.street.capitalize() or ''"/><br/>
+                </t>
+                <!--Inherit if l10n_mx_city installed and place elements here-->
+                <!--<t t-raw="partner.l10n_mx_street3 and partner.l10n_mx_street3.capitalize() or ''"/><br/>-->
+                <!--<t t-raw="partner.l10n_mx_street4 and partner.l10n_mx_street4.capitalize() or ''"/>-->
+                <t t-raw="partner.zip"/><br t-if="partner.zip"/>
+                <t t-if="partner.street2">
+                    <t t-raw="partner.street2 and partner.street2.capitalize() or ''"/><br/>
+                </t>
+                <!--<t t-raw="partner.city_id and partner.city_id.name.capitalize() or ''"/>,-->
+
+                <t t-raw="partner.state_id and partner.state_id.name or ''"/>
+                <t t-raw="partner.country_id and partner.country_id.name or ''"/>
+                <abbr title="Phone">P:</abbr> <t t-raw="partner.phone"/><span t-if="partner.phone">, </span>
+                <abbr title="Fax">F:</abbr> <t t-raw="partner.fax"/><span t-if="partner.fax">, </span>
+                <abbr title="Mobile">M:</abbr> <t t-raw="partner.mobile"/><span t-if="partner.mobile">, </span>
+            </address>
+        </template>
+
+        <template id="short_format" name="Address format for all countries (short)">
+            <address>
+                <strong><t t-raw="partner.name.capitalize()"/>.</strong><br/>
+                <t t-if="partner.street">
+                    <t t-raw="partner.street.capitalize()"/>,
+                </t>
+                <t t-if="partner.street2">
+                    <t t-raw="partner.street2.capitalize()"/><br/>
+                </t>
+                <t t-if="partner.city">
+                    <t t-raw="partner.city.capitalize()"/>,
+                </t>
+                <t t-if="partner.state_id">
+                    <t t-raw="partner.state_id.code"/>
+                </t> <t t-raw="partner.zip"/><br/>
+                <abbr title="Phone">P:</abbr> <t t-raw="partner.phone"/>
+            </address>
+        </template>
+        <template id="company_format" name="Address format In the company">
+            <address>
+                <strong><t t-raw="partner.name.capitalize()"/>.</strong><br/>
+                <t t-if="partner.street">
+                    <t t-raw="partner.street.capitalize()"/>,
+                </t>
+                <t t-if="partner.street2">
+                    <t t-raw="partner.street2.capitalize()"/><br/>
+                </t>
+                <t t-if="partner.city">
+                    <t t-raw="partner.city.capitalize()"/>,
+                </t> <t t-raw="partner.state_id.code"/> <t t-raw="partner.zip"/><br/>
+                <abbr title="Phone">P:</abbr> <t t-raw="partner.phone"/>
+            </address>
+            <address>
+                <a href="mailto:#"> <t t-raw="partner.email"/></a>
+            </address>
+        </template>
+    </data>
+</openerp>
