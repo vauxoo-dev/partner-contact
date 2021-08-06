@@ -30,15 +30,13 @@ class ResPartner(models.Model):
     def create(self, vals):
         """Add inverted names at creation if unavailable."""
         context = dict(self.env.context)
+        is_contact_copied = context.get("copy") and vals.get("firstname") and not vals.get("is_company")
+        if is_contact_copied and "name" in vals:
+            vals.pop('name', None)
+            context.pop("default_name", None)
         name = vals.get("name", context.get("default_name"))
-        if context.get("copy") and vals.get("firstname") and not vals.get("is_company"):
-            vals["firstname"] = _("%s (copy)", vals["firstname"])
-            # Remove the combined fields
-            if "name" in vals:
-                del vals["name"]
-            if "default_name" in context:
-                del context["default_name"]
-        elif name is not None:
+
+        if name is not None:
             # Calculate the splitted fields
             inverted = self._get_inverse_name(
                 self._get_whitespace_cleaned_name(name),
@@ -63,6 +61,10 @@ class ResPartner(models.Model):
         ignored in :meth:`~.create` because it also copies explicitly firstname
         and lastname fields.
         """
+        if default is None:
+            default = {}
+        if self.firstname and not self.is_company:
+            default["firstname"] = _("%s (copy)", self.firstname)
         return super(ResPartner, self.with_context(copy=True)).copy(default)
 
     @api.model
