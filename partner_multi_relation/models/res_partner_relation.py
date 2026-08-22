@@ -70,11 +70,13 @@ class ResPartnerRelation(models.Model):
     this_partner_id = fields.Many2one(
         comodel_name="res.partner",
         compute="_compute_this_partner_id",
+        search="_search_any_partner_id",
         help="Partner shown left when no currently active partner",
     )
     other_partner_id = fields.Many2one(
         comodel_name="res.partner",
         compute="_compute_other_partner_id",
+        search="_search_any_partner_id",
         help="Partner shown right when no currently active partner"
         ", or connected partnes as seen from current partner.",
     )
